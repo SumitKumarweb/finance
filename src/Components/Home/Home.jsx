@@ -1,48 +1,154 @@
-import React, { useState } from 'react'
-import Nav from '../Nav/Nav'
-import Chart from 'chart.js/auto';
-import { CategoryScale } from "chart.js";
-Chart.register(CategoryScale);
-const Data = [
-  {
-    id: 1,
-    year: 2016,
-    userGain: 80000,
-    userLost: 823
-  },
-  {
-    id: 2,
-    year: 2017,
-    userGain: 45677,
-    userLost: 345
-  },
-  {
-    id: 3,
-    year: 2018,
-    userGain: 78888,
-    userLost: 555
-  },
-  {
-    id: 4,
-    year: 2019,
-    userGain: 90000,
-    userLost: 4555
-  },
-  {
-    id: 5,
-    year: 2020,
-    userGain: 4300,
-    userLost: 234
+import React, { useEffect, useState } from 'react';
+import Nav from '../Nav/Nav';
+import axios from 'axios';
+import { Line } from 'react-chartjs-2';  // Import the Line chart from Chart.js
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+function Home({ setJwtToken }) {
+  const [incomeData, setIncomeData] = useState([]);
+  const [expenseData, setExpenseData] = useState([]);
+  const [savingsData, setSavingsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch data from the API
+  const getData = async () => {
+    try {
+      const incomeResponse = await axios.get('https://masai-eval-1-default-rtdb.firebaseio.com/income.json'); // Income data endpoint
+      const expenseResponse = await axios.get('https://masai-eval-1-default-rtdb.firebaseio.com/expense.json'); // Expense data endpoint
+
+      const incomeResult = incomeResponse.data;
+      const expenseResult = expenseResponse.data;
+
+      const formattedIncomeData = Object.values(incomeResult).map((entry) => ({
+        amount: parseFloat(entry.amount),
+        date: entry.date,
+      }));
+
+      const formattedExpenseData = Object.values(expenseResult).map((entry) => ({
+        amount: parseFloat(entry.amount),
+        date: entry.date,
+      }));
+
+      setIncomeData(formattedIncomeData);
+      setExpenseData(formattedExpenseData);
+
+      // Calculate savings as income - expense for each date
+      const allDates = [
+        ...new Set([
+          ...formattedIncomeData.map((item) => item.date),
+          ...formattedExpenseData.map((item) => item.date),
+        ]),
+      ];
+
+      const calculatedSavings = allDates.map((date) => {
+        const incomeForDate = formattedIncomeData.find((item) => item.date === date);
+        const expenseForDate = formattedExpenseData.find((item) => item.date === date);
+
+        // Calculate savings (income - expense)
+        const incomeAmount = incomeForDate ? incomeForDate.amount : 0;
+        const expenseAmount = expenseForDate ? expenseForDate.amount : 0;
+        return incomeAmount - expenseAmount;
+      });
+
+      setSavingsData(calculatedSavings);
+      setLoading(false);
+
+    } catch (error) {
+      console.error("Error fetching data", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const chartData = {
+    labels: [
+      ...new Set([
+        ...incomeData.map((item) => item.date),
+        ...expenseData.map((item) => item.date),
+      ]),
+    ],  // Combine dates from both income and expense data
+    datasets: [
+      {
+        label: 'Income Amount',
+        data: incomeData.map((item) => item.amount),
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.4,
+        fill: true,
+      },
+      {
+        label: 'Expense Amount',
+        data: expenseData.map((item) => item.amount),
+        borderColor: 'rgba(255, 99, 132, 1)',  // Different color for expenses
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        tension: 0.4,
+        fill: true,
+      },
+      {
+        label: 'Savings',
+        data: savingsData,
+        borderColor: 'rgba(54, 162, 235, 1)',  // Different color for savings
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        tension: 0.4,
+        fill: true,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Income, Expenses, and Savings Over Time',
+      },
+      legend: {
+        position: 'top',
+      },
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Date',
+        },
+      },
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Amount',
+        },
+      },
+    },
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
-];
-function Home({setJwtToken}) {
-  
+
   return (
     <div>
-        <Nav setJwtToken={setJwtToken}/>
-        
+      <Nav setJwtToken={setJwtToken} />
+      <div style={{ width: '80%', margin: 'auto' }}>
+        <Line data={chartData} options={options} />
+      </div>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
