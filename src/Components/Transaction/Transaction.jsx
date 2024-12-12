@@ -33,13 +33,13 @@ function Transaction() {
         }
     };
 
-    const deleteData = async (id) => {
+    const deleteData = async (id,type) => {
         try {
             const response = await axios.delete(
-                `https://masai-eval-1-default-rtdb.firebaseio.com/income/${id}.json`
+                `https://masai-eval-1-default-rtdb.firebaseio.com/${type}/${id}.json`
             );
 
-            if (response.ok) {
+            if (response.status == 200) {
                 toast.success('Item deleted successfully.', {
                     position: "top-right",
                     autoClose: 3000,
@@ -87,7 +87,7 @@ function Transaction() {
                                 <span><b>Amount</b>: {val.amount}</span>
                                 <span><b>Category</b>: {val.category}</span>
                                 <span><b>Date</b>: {val.date}</span>
-                                <button onClick={() => deleteData(key)}>Delete</button>
+                                <button onClick={() => deleteData(key,val.type)}>Delete</button>
                             </div>
                         ))
                     ) : (

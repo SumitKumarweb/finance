@@ -4,6 +4,7 @@ import './Income.css';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ShowData from '../ShowData/ShowData';
+import axios from 'axios';
 
 function Income() {
     const [incomeData, setIncomeData] = useState({
@@ -16,7 +17,7 @@ function Income() {
 
     const postDataFirebase = async () => {
         try {
-            await fetch('https://masai-eval-1-default-rtdb.firebaseio.com/income.json', incomeData);
+            await axios.post('https://masai-eval-1-default-rtdb.firebaseio.com/income.json', incomeData);
         } catch (error) {
             console.error('Error posting data:', error);
         }
