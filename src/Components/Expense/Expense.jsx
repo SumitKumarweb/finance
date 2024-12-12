@@ -16,13 +16,7 @@ function Expense() {
 
     const postDataFirebase = async () => {
         try {
-            await fetch('https://masai-eval-1-default-rtdb.firebaseio.com/expense.json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(expenseData),
-            });
+            await axios.post('https://masai-eval-1-default-rtdb.firebaseio.com/expense.json',expenseData)
         } catch (error) {
             console.error('Error posting data:', error);
         }

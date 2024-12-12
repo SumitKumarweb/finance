@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './ShowData.css';
+import axios from 'axios';
 
 function ShowData({ type, incomeData, expenseData }) {
     const [data, setData] = useState(null);
@@ -10,8 +11,8 @@ function ShowData({ type, incomeData, expenseData }) {
     const getData = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`https://masai-eval-1-default-rtdb.firebaseio.com/${type}.json`);
-            const result = await response.json();
+            const response = await axios.get(`https://masai-eval-1-default-rtdb.firebaseio.com/${type}.json`);
+            const result = await response.data;
             setData(result);
         } catch (error) {
             toast.error('Something went wrong while fetching data.', {

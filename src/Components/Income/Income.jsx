@@ -16,13 +16,7 @@ function Income() {
 
     const postDataFirebase = async () => {
         try {
-            await fetch('https://masai-eval-1-default-rtdb.firebaseio.com/income.json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(incomeData),
-            });
+            await fetch('https://masai-eval-1-default-rtdb.firebaseio.com/income.json', incomeData);
         } catch (error) {
             console.error('Error posting data:', error);
         }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Nav from '../Nav/Nav';
 import { toast, Bounce, ToastContainer } from 'react-toastify';
+import axios from 'axios';
 
 function Transaction() {
     const [data, setData] = useState(null);
@@ -10,10 +11,10 @@ function Transaction() {
         setLoading(true);
         try {
             const [response1, response2] = await Promise.all([
-                fetch(`https://masai-eval-1-default-rtdb.firebaseio.com/income.json`),
-                fetch(`https://masai-eval-1-default-rtdb.firebaseio.com/expense.json`) // Assuming another URL
+                axios.get(`https://masai-eval-1-default-rtdb.firebaseio.com/income.json`),
+                axios.get(`https://masai-eval-1-default-rtdb.firebaseio.com/expense.json`) // Assuming another URL
             ]);
-            const [result1, result2] = await Promise.all([response1.json(), response2.json()]);
+            const [result1, result2] = await Promise.all([response1.data, response2.data]);
             const combinedData = { ...result1, ...result2 };
             setData(combinedData);
         } catch (error) {
@@ -34,9 +35,8 @@ function Transaction() {
 
     const deleteData = async (id) => {
         try {
-            const response = await fetch(
-                `https://masai-eval-1-default-rtdb.firebaseio.com/income/${id}.json`,
-                { method: 'DELETE' }
+            const response = await axios.delete(
+                `https://masai-eval-1-default-rtdb.firebaseio.com/income/${id}.json`
             );
 
             if (response.ok) {
