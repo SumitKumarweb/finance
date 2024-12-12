@@ -32,7 +32,7 @@ function ShowData({ type, incomeData, expenseData }) {
 
     useEffect(() => {
         getData();
-    }, [incomeData, expenseData]);
+    }, [type]);
 
     return (
         <>
