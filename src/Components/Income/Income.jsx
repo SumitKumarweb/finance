@@ -14,10 +14,12 @@ function Income() {
         date: '',
         type: 'income',
     });
+    const [postData ,setPostData] = useState(null)
 
     const postDataFirebase = async () => {
         try {
             await axios.post('https://masai-eval-1-default-rtdb.firebaseio.com/income.json', incomeData);
+            setPostData(incomeData)
         } catch (error) {
             console.error('Error posting data:', error);
         }
@@ -39,6 +41,16 @@ function Income() {
             return;
         }
         postDataFirebase();
+        toast.success('Add Income Successfully', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: 'colored',
+            transition: Bounce,
+        });
         setIncomeData({
             amount: '',
             description: '',
@@ -79,7 +91,7 @@ function Income() {
                 />
                 <button type="submit">Add Income</button>
             </form>
-            <ShowData type="income" incomeData={incomeData} />
+            <ShowData type="income" incomeData={postData} />
         </div>
     );
 }

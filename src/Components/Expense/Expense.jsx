@@ -4,6 +4,7 @@ import '../Income/Income.css';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ShowData from '../ShowData/ShowData';
+import axios from 'axios';
 
 function Expense() {
     const [expenseData, setExpenseData] = useState({
@@ -13,10 +14,12 @@ function Expense() {
         date: '',
         type: 'expense',
     });
+    const [postData ,setPostData] = useState(null)
 
     const postDataFirebase = async () => {
         try {
             await axios.post('https://masai-eval-1-default-rtdb.firebaseio.com/expense.json',expenseData)
+            setPostData(expenseData)
         } catch (error) {
             console.error('Error posting data:', error);
         }
@@ -38,6 +41,16 @@ function Expense() {
             return;
         }
         postDataFirebase();
+        toast.success('Add Expense Successfully', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: 'colored',
+            transition: Bounce,
+        });
         setExpenseData({
             amount: '',
             description: '',
@@ -78,7 +91,7 @@ function Expense() {
                 />
                 <button type="submit">Add Expense</button>
             </form>
-            <ShowData type="expense" expenseData={expenseData} />
+            <ShowData type="expense" expenseData={postData} />
         </div>
     );
 }
