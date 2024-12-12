@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Nav from '../Nav/Nav';
 import axios from 'axios';
-import { Line } from 'react-chartjs-2';  // Import the Line chart from Chart.js
+import { Line } from 'react-chartjs-2'; 
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(
@@ -20,7 +20,6 @@ function Home({ setJwtToken }) {
   const [savingsData, setSavingsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch data from the API
   const getData = async () => {
     try {
       const incomeResponse = await axios.get('https://masai-eval-1-default-rtdb.firebaseio.com/income.json'); // Income data endpoint
@@ -42,7 +41,6 @@ function Home({ setJwtToken }) {
       setIncomeData(formattedIncomeData);
       setExpenseData(formattedExpenseData);
 
-      // Calculate savings as income - expense for each date
       const allDates = [
         ...new Set([
           ...formattedIncomeData.map((item) => item.date),
@@ -54,7 +52,6 @@ function Home({ setJwtToken }) {
         const incomeForDate = formattedIncomeData.find((item) => item.date === date);
         const expenseForDate = formattedExpenseData.find((item) => item.date === date);
 
-        // Calculate savings (income - expense)
         const incomeAmount = incomeForDate ? incomeForDate.amount : 0;
         const expenseAmount = expenseForDate ? expenseForDate.amount : 0;
         return incomeAmount - expenseAmount;
@@ -79,7 +76,7 @@ function Home({ setJwtToken }) {
         ...incomeData.map((item) => item.date),
         ...expenseData.map((item) => item.date),
       ]),
-    ],  // Combine dates from both income and expense data
+    ],   
     datasets: [
       {
         label: 'Income Amount',
@@ -92,7 +89,7 @@ function Home({ setJwtToken }) {
       {
         label: 'Expense Amount',
         data: expenseData.map((item) => item.amount),
-        borderColor: 'rgba(255, 99, 132, 1)',  // Different color for expenses
+        borderColor: 'rgba(255, 99, 132, 1)',   
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         tension: 0.4,
         fill: true,
@@ -100,7 +97,7 @@ function Home({ setJwtToken }) {
       {
         label: 'Savings',
         data: savingsData,
-        borderColor: 'rgba(54, 162, 235, 1)',  // Different color for savings
+        borderColor: 'rgba(54, 162, 235, 1)',  
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
         tension: 0.4,
         fill: true,
