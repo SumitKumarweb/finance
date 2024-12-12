@@ -30,7 +30,8 @@ const Auth = () => {
       });
       return;
     }
-
+  }
+ 
     try {
       if (authState) {
         await createUserWithEmailAndPassword(auth, email, password);
