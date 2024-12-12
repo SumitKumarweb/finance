@@ -76,8 +76,6 @@ const Auth = () => {
         password:''
       })
     }
-    
-
   }
 
 
