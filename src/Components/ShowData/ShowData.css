@@ -1,0 +1,30 @@
+#showData{
+    display: flex;
+    color: white;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    background-color: #201B2C;
+}
+
+#showData > div {
+    border: 1px solid white;
+    width: 15%;
+    height: 200px;
+    margin: 20px;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+
+#showData>div>button{
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    color: black;
+    background: #bebebe;
+    cursor: pointer;
+}

@@ -1,0 +1,22 @@
+nav{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #201B2C;
+}
+nav > img{
+    border-radius: 100%;
+    width: 50px;
+    margin: 15px;
+}
+
+nav > div > button{
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    background: teal;
+    border-radius: 4px;
+    margin: 0px 15px;
+    letter-spacing: 3px;
+    cursor: pointer;
+}
