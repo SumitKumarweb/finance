@@ -5,8 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { auth } from "../Firebase/Firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
-const Auth = () => {
-  const [authState, setAuthState] = useState(true); // true: Sign Up, false: Login
+const Auth = ({setJwtToken}) => {
+  const [authState, setAuthState] = useState(true);  
   const [authData, setAuthData] = useState({
     user: "",
     email: "",
@@ -17,7 +17,6 @@ const Auth = () => {
   const handleAuth = async () => {
     const { email, password, user } = authData;
 
-    // Input validation
     if (!email.includes("@") || password.length < 6 || (authState && !user)) {
       toast.error("Please fill all fields with valid data.", {
         position: "top-right",
@@ -37,7 +36,6 @@ const Auth = () => {
 
     try {
       if (authState) {
-        // Sign-up process
         await createUserWithEmailAndPassword(auth, email, password);
         toast.success("Sign Up successful", {
           position: "top-right",
@@ -54,7 +52,7 @@ const Auth = () => {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const token = await userCredential.user.getIdToken();
         localStorage.setItem("jwtToken", token);
-
+        setJwtToken(token)
         toast.success("Login successful", {
           position: "top-right",
           autoClose: 5000,
